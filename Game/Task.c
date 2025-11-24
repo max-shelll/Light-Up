@@ -7,17 +7,17 @@
 #define BLACK 0.3
 #define NUMBER 0.6
 
-void initializeBoard(char* board[SIZE][SIZE]);
-void printBoard(char* board[SIZE][SIZE]);
-int isValidBoard(char* board[SIZE][SIZE]);
-int saveToFile(char* board[SIZE][SIZE], char* fileName);
+void initializeBoard(char board[SIZE][SIZE]);
+void printBoard(char board[SIZE][SIZE]);
+int isValidBoard(char board[SIZE][SIZE]);
+int saveToFile(char board[SIZE][SIZE], char* fileName);
 void log_error(char* message);
 
 int main() {
     setlocale(LC_CTYPE, "RUS");
     srand(time(NULL));
 
-    char* board[SIZE][SIZE];
+    char board[SIZE][SIZE];
     char* fileName[200];
     
     int choice = 0;
@@ -46,7 +46,7 @@ int main() {
                 scanf("%s", &fileName);
 
                 int res = saveToFile(board, fileName);
-                if (res == 0)
+                if (res == 1)
                     printf("Поле сохранено в файл: %s\n", fileName);
                 else {
                     printf("ОШИБКА! Посмотрите файл ошибок\n");
@@ -79,7 +79,7 @@ int main() {
 * Заполнение поля значениями
 * @param board - поле для заполнения
 */
-void initializeBoard(char* board[SIZE][SIZE]) {
+void initializeBoard(char board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if ((double)rand() / RAND_MAX < BLACK) {
@@ -106,7 +106,7 @@ void initializeBoard(char* board[SIZE][SIZE]) {
 * Печать поля
 * @param board - поле для печати
 */
-void printBoard(char* board[SIZE][SIZE]) {
+void printBoard(char board[SIZE][SIZE]) {
     printf("\n");
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -121,7 +121,7 @@ void printBoard(char* board[SIZE][SIZE]) {
 * @param board - проверяемое поле
 * @return успешность генерации (0 - ошибка, 1 - успешно)
 */
-int isValidBoard(char* board[SIZE][SIZE]) {
+int isValidBoard(char board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (board[i][j] >= '1' && board[i][j] <= '3') {
@@ -163,11 +163,11 @@ int isValidBoard(char* board[SIZE][SIZE]) {
 * Сохранение поля в файл
 * @param board - поле для сохранения
 * @param fileName - имя файла для сохранения
-* @return успешность сохранения (-1 - ошибка, 0 - успешно)
+* @return успешность сохранения (0 - ошибка, 1 - успешно)
 */
-int saveToFile(char* board[SIZE][SIZE], char* fileName) {
+int saveToFile(char board[SIZE][SIZE], char* fileName) {
     FILE* file = fopen(fileName, "w");
-    if (file == NULL) return -1;
+    if (file == NULL) return 0;
 
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) fprintf(file, "%c", board[i][j]);
@@ -175,11 +175,11 @@ int saveToFile(char* board[SIZE][SIZE], char* fileName) {
     }
 
     fclose(file);
-    return 0;
+    return 1;
 }
 
 /**
-* Сохранение ошибки в файл
+* Сохранение информации об ошибке в файл
 * @param message - сообщение ошибки
 */
 void log_error(char* message) {
