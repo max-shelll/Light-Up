@@ -9,6 +9,8 @@
 
 void initializeBoard(char board[SIZE][SIZE]);
 void printBoard(char board[SIZE][SIZE]);
+int checkNumberCells(char board[SIZE][SIZE]);
+int checkEmptyCells(char board[SIZE][SIZE]);
 int isValidBoard(char board[SIZE][SIZE]);
 int saveToFile(char board[SIZE][SIZE], char* fileName);
 void log_error(char* message);
@@ -117,11 +119,11 @@ void printBoard(char board[SIZE][SIZE]) {
 }
 
 /**
-* Проверка значений поля на корректность
-* @param board - проверяемое поле
-* @return успешность генерации (0 - ошибка, 1 - успешно)
-*/
-int isValidBoard(char board[SIZE][SIZE]) {
+ * Проверка числовых ячеек поля на корректность
+ * @param board - проверяемое поле
+ * @return успешность проверки (0 - ошибка, 1 - успешно)
+ */
+int checkNumberCells(char board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (board[i][j] >= '1' && board[i][j] <= '3') {
@@ -139,11 +141,20 @@ int isValidBoard(char board[SIZE][SIZE]) {
             }
         }
     }
+    return 1;
+}
 
+/**
+ * Проверка пустых ячеек поля на корректность
+ * @param board - проверяемое поле
+ * @return успешность проверки (0 - ошибка, 1 - успешно)
+ */
+int checkEmptyCells(char board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == '.') {
                 int neighbors = 0;
+
                 if (i > 0 && board[i - 1][j] != 'B' && !(board[i - 1][j] >= '1' && board[i - 1][j] <= '3')) neighbors++;
                 if (i < SIZE - 1 && board[i + 1][j] != 'B' && !(board[i + 1][j] >= '1' && board[i + 1][j] <= '3')) neighbors++;
                 if (j > 0 && board[i][j - 1] != 'B' && !(board[i][j - 1] >= '1' && board[i][j - 1] <= '3')) neighbors++;
@@ -155,9 +166,18 @@ int isValidBoard(char board[SIZE][SIZE]) {
             }
         }
     }
-
     return 1;
 }
+
+/**
+ * Проверка значений поля на корректность
+ * @param board - проверяемое поле
+ * @return успешность генерации (0 - ошибка, 1 - успешно)
+ */
+int isValidBoard(char board[SIZE][SIZE]) {
+    return checkNumberCells(board) && checkEmptyCells(board);
+}
+
 
 /**
 * Сохранение поля в файл
